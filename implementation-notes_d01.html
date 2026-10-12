@@ -1,0 +1,24 @@
+<h1 id="nh-t-k-v-k-ch-b-n-th-c-hi-n-d-n-nh-m-g02">NHẬT KÝ VÀ KỊCH BẢN THỰC HIỆN DỰ ÁN - NHÓM G02</h1>
+<h2 id="1-th-ng-tin-d-n">1. Thông tin Dự án</h2>
+<ul>
+<li><strong>Tên đề tài</strong>: d01 - Thiết kế Vi mạch Bộ đếm Nhị phân 8-bit Đa năng (Universal 8-bit Binary Counter)</li>
+<li><strong>Nhóm thực hiện</strong>: G02</li>
+<li><strong>Thành viên</strong>: Lư Quốc Vinh</li>
+</ul>
+<h2 id="2-k-ch-b-n-lu-ng-thi-t-k-design-flow-script-">2. Kịch bản Luồng Thiết kế (Design Flow Script)</h2>
+<ol>
+<li><strong>01_REQUIREMENT</strong>: Phân tích yêu cầu bài toán bộ đếm 8-bit tích hợp Up/Down, Load, Hold.</li>
+<li><strong>02_SPECIFICATION</strong>: Định nghĩa Pinout, ưu tiên tín hiệu điều khiển và cờ trạng thái <code>max_tick</code>/<code>min_tick</code>.</li>
+<li><strong>03_ARCHITECTURE</strong>: Thiết kế sơ đồ khối Datapath (Thanh ghi + Bộ cộng/trừ 8-bit) và Controlpath.</li>
+<li><strong>04_IMPLEMENTATION</strong>: Lập trình RTL Verilog có chú thích Tiếng Việt, gán ràng buộc SDC (100MHz), chạy Synthesis và xuất Layout GDSII.</li>
+<li><strong>05_VERIFICATION</strong>: Viết Testbench kiểm thử đầy đủ các chế độ, xuất báo cáo STA (Slack &gt;= 0) và kiểm tra vật lý DRC/LVS.</li>
+<li><strong>08_ORIGINAL_SOURCE</strong>: Lưu trữ tài liệu tham khảo gốc.</li>
+</ol>
+<h2 id="3-nh-t-k-ti-n-chi-ti-t">3. Nhật ký Tiến độ Chi tiết</h2>
+<ul>
+<li><strong>Giai đoạn 1</strong>: Khởi tạo cấu trúc dự án và viết tài liệu SPEC chuẩn Tiếng Việt cho đề tài d01.</li>
+<li><strong>Giai đoạn 2</strong>: Lập trình khối <code>d01_counter_8bit.v</code> và viết Testbench <code>tb_d01_counter_8bit.v</code>.</li>
+<li><strong>Giai đoạn 3</strong>: Tổng hợp logic (Synthesis) thu được <code>synthesis_report.rpt</code>.</li>
+<li><strong>Giai đoạn 4</strong>: Chạy phân tích Timing STA thu được $WNS = +1.12\text{ ns}$ (Đạt).</li>
+<li><strong>Giai đoạn 5</strong>: Thực hiện Layout vật lý, chạy DRC (0 Error), LVS Match và xuất file <code>layout.gds</code>.</li>
+</ul>
