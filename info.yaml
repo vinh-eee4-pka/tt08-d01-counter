@@ -17,7 +17,7 @@ project:
   source_files:
     - "tt_um_d01_counter.v"
 
-  # Documentation fields required for docs generation:
+  # Documentation fields (phải thụt lề 2 khoảng trắng nằm trong project):
   how_it_works: "An 8-bit binary counter with enable, up/down direction, and direct load inputs."
   how_to_test:  "Apply clock and reset_n high, toggle en/up_down/load pins to verify counting logic."
   external_hardware: "None"
