@@ -1,4 +1,4 @@
- # Tiny Tapeout project information
+# Tiny Tapeout project information
 project:
   title:        "8-bit Universal Counter"
   author:       "Luu Quoc Vinh"
@@ -7,25 +7,18 @@ project:
   language:     "Verilog"
   clock_hz:     0
 
-  # How many tiles your design occupies?
   tiles:        "1x1"
-
-  # Your top module name must start with "tt_um_".
   top_module:   "tt_um_d01_counter"
 
-  # List your project's source files here.
   source_files:
     - "tt_um_d01_counter.v"
 
-  # Documentation fields (phải thụt lề 2 khoảng trắng nằm trong project):
   how_it_works: "An 8-bit binary counter with enable, up/down direction, and direct load inputs."
   how_to_test:  "Apply clock and reset_n high, toggle en/up_down/load pins to verify counting logic."
   external_hardware: "None"
   doc_link:     ""
 
-# The pinout of your project. Leave unused pins blank. DO NOT delete or rename inputs.
 pinout:
-  # Inputs
   ui_in:
     - "clk"
     - "rst_n"
@@ -72,5 +65,4 @@ pinout:
     - "none"
     - "none"
 
-# Do not change!
 yaml_version: 6
