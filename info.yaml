@@ -18,17 +18,18 @@ project:
   external_hardware: "None"
   doc_link:     ""
 
+# Pinout mapping chuẩn cho TT08 (dùng ui, uo, uio)
 pinout:
-  ui_in:
-    - "clk"
-    - "rst_n"
+  ui:
     - "en"
     - "up_down"
     - "load"
-    - "d_in[0]"
-    - "d_in[1]"
-    - "d_in[2]"
-  uo_out:
+    - "none"
+    - "none"
+    - "none"
+    - "none"
+    - "none"
+  uo:
     - "count[0]"
     - "count[1]"
     - "count[2]"
@@ -37,32 +38,14 @@ pinout:
     - "count[5]"
     - "count[6]"
     - "count[7]"
-  uio_in:
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-  uio_out:
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-  uio_oe:
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
+  uio:
+    - "d_in[0]"
+    - "d_in[1]"
+    - "d_in[2]"
+    - "d_in[3]"
+    - "d_in[4]"
+    - "d_in[5]"
+    - "d_in[6]"
+    - "d_in[7]"
 
 yaml_version: 6
