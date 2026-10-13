@@ -1,11 +1,6 @@
-# 8-bit Universal Counter (Charter D01)
-
 ## How it works
 
-An 8-bit universal binary counter supporting up/down counting, parallel data load, and hold functionality according to Charter D01.
-
-- Inputs: `ui_in[7:0]` = `d_in[7:0]`, `uio_in[0]` = `load`, `uio_in[1]` = `up_down`, `uio_in[2]` = `en`.
-- Outputs: `uo_out[7:0]` = `count[7:0]`.
+An 8-bit universal binary counter with enable (`en`), up/down direction (`up_down`), and direct parallel load (`load`) inputs.
 
 ## How to test
 
