@@ -18,34 +18,33 @@ project:
   external_hardware: "None"
   doc_link:     ""
 
-# Pinout mapping chuẩn cho TT08 (dùng ui, uo, uio)
+# Pinout configuration for Tiny Tapeout 08 (yaml_version: 6)
 pinout:
-  ui:
-    - "en"
-    - "up_down"
-    - "load"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-    - "none"
-  uo:
-    - "count[0]"
-    - "count[1]"
-    - "count[2]"
-    - "count[3]"
-    - "count[4]"
-    - "count[5]"
-    - "count[6]"
-    - "count[7]"
-  uio:
-    - "d_in[0]"
-    - "d_in[1]"
-    - "d_in[2]"
-    - "d_in[3]"
-    - "d_in[4]"
-    - "d_in[5]"
-    - "d_in[6]"
-    - "d_in[7]"
+  ui[0]: "en"
+  ui[1]: "up_down"
+  ui[2]: "load"
+  ui[3]: ""
+  ui[4]: ""
+  ui[5]: ""
+  ui[6]: ""
+  ui[7]: ""
+
+  uo[0]: "count[0]"
+  uo[1]: "count[1]"
+  uo[2]: "count[2]"
+  uo[3]: "count[3]"
+  uo[4]: "count[4]"
+  uo[5]: "count[5]"
+  uo[6]: "count[6]"
+  uo[7]: "count[7]"
+
+  uio[0]: "d_in[0]"
+  uio[1]: "d_in[1]"
+  uio[2]: "d_in[2]"
+  uio[3]: "d_in[3]"
+  uio[4]: "d_in[4]"
+  uio[5]: "d_in[5]"
+  uio[6]: "d_in[6]"
+  uio[7]: "d_in[7]"
 
 yaml_version: 6
