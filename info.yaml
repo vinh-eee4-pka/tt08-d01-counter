@@ -5,7 +5,7 @@ project:
   discord:      ""
   description:  "8-bit universal binary counter with up/down, load, and hold functionality."
   language:     "Verilog"
-  clock_hz:     0
+  clock_hz:     10000000
 
   tiles:        "1x1"
   top_module:   "tt_um_d01_counter"
