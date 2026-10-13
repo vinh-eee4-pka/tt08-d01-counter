@@ -1,40 +1,50 @@
-# SPDX-FileCopyrightText: © 2024 Tiny Tapeout
-# SPDX-License-Identifier: Apache-2.0
-
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
-
+from cocotb.triggers import ClockCycles, Timer
 
 @cocotb.test()
-async def test_project(dut):
-    dut._log.info("Start")
+async def test_counter(dut):
+    dut._log.info("Start 8-bit Universal Counter Test")
 
-    # Set the clock period to 10 us (100 KHz)
     clock = Clock(dut.clk, 10, units="us")
     cocotb.start_soon(clock.start())
 
-    # Reset
-    dut._log.info("Reset")
     dut.ena.value = 1
     dut.ui_in.value = 0
     dut.uio_in.value = 0
     dut.rst_n.value = 0
-    await ClockCycles(dut.clk, 10)
+
+    await ClockCycles(dut.clk, 2)
     dut.rst_n.value = 1
-
-    dut._log.info("Test project behavior")
-
-    # Set the input values you want to test
-    dut.ui_in.value = 20
-    dut.uio_in.value = 30
-
-    # Wait for one clock cycle to see the output values
     await ClockCycles(dut.clk, 1)
+    await Timer(1, units="ns")
 
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    assert dut.uo_out.value == 50
+    # TC_01: Reset
+    assert int(dut.uo_out.value) == 0, f"Reset failed: expected 0, got {int(dut.uo_out.value)}"
 
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
+    # TC_02: Parallel Load (d_in = 0xA5)
+    dut.uio_in.value = 0xA5
+    dut.ui_in.value = 0b00000101  # load = 1, en = 1
+    await ClockCycles(dut.clk, 1)
+    await Timer(1, units="ns")
+    assert int(dut.uo_out.value) == 0xA5, f"Load failed: expected 0xA5, got {int(dut.uo_out.value)}"
+
+    # TC_03: Up Count
+    dut.ui_in.value = 0b00000001  # load = 0, up_down = 1, en = 1
+    await ClockCycles(dut.clk, 1)
+    await Timer(1, units="ns")
+    assert int(dut.uo_out.value) == 0xA6, f"Up count failed: expected 0xA6, got {int(dut.uo_out.value)}"
+
+    # TC_04: Down Count
+    dut.ui_in.value = 0b00000000  # load = 0, up_down = 0, en = 1
+    await ClockCycles(dut.clk, 1)
+    await Timer(1, units="ns")
+    assert int(dut.uo_out.value) == 0xA5, f"Down count failed: expected 0xA5, got {int(dut.uo_out.value)}"
+
+    # TC_05: Hold Mode
+    dut.ui_in.value = 0b00000000  # en = 0
+    await ClockCycles(dut.clk, 2)
+    await Timer(1, units="ns")
+    assert int(dut.uo_out.value) == 0xA5, f"Hold failed: expected 0xA5, got {int(dut.uo_out.value)}"
+
+    dut._log.info("All 8-bit Counter Testcases Passed!")

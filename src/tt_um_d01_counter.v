@@ -14,7 +14,6 @@ module tt_um_d01_counter (
   wire en      = ui_in[0];
   wire up_down = ui_in[1];
   wire load    = ui_in[2];
-  
   wire [7:0] d_in = uio_in;
 
   reg [7:0] count_reg;
