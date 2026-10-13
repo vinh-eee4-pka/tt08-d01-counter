@@ -1,41 +1,50 @@
-![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
+# Project D01: 8-bit Universal Counter (Tiny Tapeout 08)
 
-# Tiny Tapeout Verilog Project Template
+**Tác giả:** Lưu Quốc Vinh  
+**Trường:** Đại học Phenikaa - Ngành Kỹ thuật Điện tử - Viễn thông (Vi mạch bán dẫn)  
+**Mục tiêu:** Thiết kế và đóng gói vi mạch Bộ đếm nhị phân 8-bit đa năng trên nền tảng **Tiny Tapeout 08 (TT08)**.
 
-- [Read the documentation for project](docs/info.md)
+---
 
-## What is Tiny Tapeout?
+## 📌 Giới thiệu chung
+Bộ đếm nhị phân 8-bit đa năng (**8-bit Universal Counter**) là khối chức năng xử lý số tích hợp các chế độ hoạt động:
+- **Đếm tiến (Up Counting)**
+- **Đếm lùi (Down Counting)**
+- **Nạp dữ liệu song song (Parallel Load)**
+- **Giữ giá trị (Hold / Disable)**
+- **Xóa bất đồng bộ (Asynchronous Active-Low Reset)**
 
-Tiny Tapeout is an educational project that aims to make it easier and cheaper than ever to get your digital and analog designs manufactured on a real chip.
+---
 
-To learn more and get started, visit https://tinytapeout.com.
+## 🎛️ Bảng giao tiếp chân tín hiệu (Pinout Table)
 
-## Set up your Verilog project
+| Chân (Pin) | Tên tín hiệu | Hướng (I/O) | Mô tả chức năng |
+|---|---|---|---|
+| clk | Clock | Input | Xung nhịp hệ thống |
+| rst_n | Reset | Input | Tín hiệu Reset tích cực mức thấp (0) |
+| ui[0] | en | Input | Cho phép đếm (1: Enable, 0: Hold) |
+| ui[1] | up_down | Input | Hướng đếm (1: Up, 0: Down) |
+| ui[2] | load | Input | Nạp dữ liệu song song (1: Load từ d_in) |
+| uio[7:0] | d_in[7:0] | Input | Dữ liệu nạp đầu vào 8-bit |
+| uo[7:0] | count[7:0] | Output | Giá trị đếm đầu ra 8-bit |
 
-1. Add your Verilog files to the `src` folder.
-2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
-3. Edit [docs/info.md](docs/info.md) and add a description of your project.
-4. Adapt the testbench to your design. See [test/README.md](test/README.md) for more information.
+---
 
-The GitHub action will automatically build the ASIC files using [OpenLane](https://www.zerotoasiccourse.com/terminology/openlane/).
+## 📊 Bảng chức năng (Function Table)
 
-## Enable GitHub actions to build the results page
+| rst_n | en | load | up_down | Hoạt động (Operation) | Giá trị đếm count[7:0] |
+|:---:|:---:|:---:|:---:|---|---|
+| 0 | X | X | X | **Reset** | 8'b00000000 |
+| 1 | 0 | X | X | **Hold** | Không đổi |
+| 1 | 1 | 1 | X | **Parallel Load** | Dữ liệu d_in[7:0] |
+| 1 | 1 | 0 | 1 | **Up Count** | count + 1 |
+| 1 | 1 | 0 | 0 | **Down Count** | count - 1 |
 
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
+---
 
-## Resources
-
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://tinytapeout.com/discord)
-- [Build your design locally](https://www.tinytapeout.com/guides/local-hardening/)
-
-## What next?
-
-- [Submit your design to the next shuttle](https://app.tinytapeout.com/).
-- Edit [this README](README.md) and explain your design, how it works, and how to test it.
-- Share your project on your social network of choice:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [@TinyTapeout](https://www.linkedin.com/company/100708654/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - X (formerly Twitter) [#tinytapeout](https://twitter.com/hashtag/tinytapeout) [@tinytapeout](https://twitter.com/tinytapeout)
+## 📁 Cấu trúc tài liệu dự án
+- [01_REQUIREMENT](./01_REQUIREMENT): Yêu cầu thiết kế chi tiết.
+- [02_SPECIFICATION](./02_SPECIFICATION): Đặc tả kỹ thuật & chuẩn giao tiếp.
+- [03_ARCHITECTURE](./03_ARCHITECTURE): Sơ đồ kiến trúc Datapath & Control Unit.
+- [04_IMPLEMENTATION](./04_IMPLEMENTATION): Mã nguồn RTL Verilog & Đóng gói TT08.
+- [05_VERIFICATION](./05_VERIFICATION): Kịch bản mô phỏng & Kết quả kiểm thử.
