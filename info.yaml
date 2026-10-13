@@ -7,11 +7,6 @@ project:
   language:     "Verilog"
   clock_hz:     10000000
 
-  how_it_works: "An 8-bit universal binary counter with enable, up/down direction, and direct parallel load."
-  how_to_test:  "Apply clock and toggle enable/load/up_down control pins."
-  external_hardware: "None"
-  doc_link:     ""
-
   tiles:        "1x1"
   top_module:   "tt_um_d01_counter"
 
