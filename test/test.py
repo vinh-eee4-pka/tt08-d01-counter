@@ -13,7 +13,7 @@ async def test_counter_charter_d01(dut):
     dut.ui_in.value = 0
     dut.uio_in.value = 0
 
-    # Tạo xung reset rõ ràng (1 -> 0 -> 1)
+    # Khởi tạo Reset (1 -> 0 -> 1)
     dut.rst_n.value = 1
     await ClockCycles(dut.clk, 2)
     dut.rst_n.value = 0
@@ -54,14 +54,14 @@ async def test_counter_charter_d01(dut):
     await FallingEdge(dut.clk)
     assert get_val() == 0xA5, f"Hold failed: expected 0xA5, got {hex(get_val())}"
 
-    # 6. Priority Test (load=1, up_down=1, en=1 -> uio = 7)
+    # 6. Priority Test (load=1, up_down=1, en=1 -> uio = 7) [Ca bổ sung 1]
     dut.ui_in.value = 0x3C
     dut.uio_in.value = 0b00000111
     await ClockCycles(dut.clk, 2)
     await FallingEdge(dut.clk)
     assert get_val() == 0x3C, f"Priority test failed: expected 0x3C, got {hex(get_val())}"
 
-    # 7. Asynchronous Reset Mid-Count Test
+    # 7. Async Reset Mid-Count Test [Ca bổ sung 2]
     dut.uio_in.value = 0b00000110
     await ClockCycles(dut.clk, 2)
     await FallingEdge(dut.clk)
