@@ -1,20 +1,17 @@
-<!---
-
-This file is used to generate your project datasheet. Please fill in the information below and delete any unused
-sections.
-
-You can also include images in this folder and reference them in the markdown. Each image must be less than
-512 kb in size, and the combined size of all images must be less than 1 MB.
--->
+# 8-bit Universal Counter
 
 ## How it works
 
-Explain how your project works
+An 8-bit universal binary counter supporting up/down counting, parallel loading, and hold operations.
 
 ## How to test
 
-Explain how to use your project
+1. Apply clock `clk` and set `rst_n = 1`.
+2. Set `ui[0]` (en) = 1, `ui[1]` (up_down) = 1 for Up Counting.
+3. Set `ui[1]` (up_down) = 0 for Down Counting.
+4. Set `ui[2]` (load) = 1 and apply input data on `uio[7:0]` for Parallel Load.
+5. Set `ui[0]` (en) = 0 for Hold Mode.
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+None

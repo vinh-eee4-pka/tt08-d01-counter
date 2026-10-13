@@ -5,7 +5,7 @@ project:
   discord:      ""
   description:  "8-bit universal binary counter with up/down, load, and hold functionality."
   language:     "Verilog"
-  clock_hz:     0
+  clock_hz:     10000000
 
   tiles:        "1x1"
   top_module:   "tt_um_d01_counter"
@@ -18,16 +18,15 @@ project:
   external_hardware: "None"
   doc_link:     ""
 
-# Pinout configuration for Tiny Tapeout 08 (yaml_version: 6)
 pinout:
   ui[0]: "en"
   ui[1]: "up_down"
   ui[2]: "load"
-  ui[3]: ""
-  ui[4]: ""
-  ui[5]: ""
-  ui[6]: ""
-  ui[7]: ""
+  ui[3]: "none"
+  ui[4]: "none"
+  ui[5]: "none"
+  ui[6]: "none"
+  ui[7]: "none"
 
   uo[0]: "count[0]"
   uo[1]: "count[1]"
