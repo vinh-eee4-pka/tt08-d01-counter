@@ -1,20 +1,20 @@
 `default_nettype none
 
 module tt_um_d01_counter (
-    input  wire [7:0] ui_in,    // Dedicated inputs
-    output wire [7:0] uo_out,   // Dedicated outputs
-    input  wire [7:0] uio_in,   // IOs: Input path
+    input  wire [7:0] ui_in,    // Dedicated inputs: d_in[7:0]
+    output wire [7:0] uo_out,   // Dedicated outputs: count[7:0]
+    input  wire [7:0] uio_in,   // IOs: [0]=load, [1]=up_down, [2]=en
     output wire [7:0] uio_out,  // IOs: Output path
-    output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
-    input  wire       ena,      // always 1 when the design is powered or selected
+    output wire [7:0] uio_oe,   // IOs: Enable path
+    input  wire       ena,      // always 1 when selected
     input  wire       clk,      // clock
     input  wire       rst_n     // reset_n - low to reset
 );
 
-  wire en      = ui_in[0];
-  wire up_down = ui_in[1];
-  wire load    = ui_in[2];
-  wire [7:0] d_in = uio_in;
+  wire [7:0] d_in = ui_in;
+  wire load    = uio_in[0];
+  wire up_down = uio_in[1];
+  wire en      = uio_in[2];
 
   reg [7:0] count_reg;
 
@@ -36,6 +36,6 @@ module tt_um_d01_counter (
   assign uio_out = 8'b0000_0000;
   assign uio_oe  = 8'b0000_0000;
 
-  wire _unused = &{ena, ui_in[7:3], 1'b0};
+  wire _unused = &{ena, uio_in[7:3], 1'b0};
 
 endmodule
