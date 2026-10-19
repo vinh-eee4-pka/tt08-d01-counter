@@ -32,19 +32,19 @@ async def test_counter_charter_d01(dut):
     # 2. Parallel Load Test (load=1, up_down=0, en=1 -> uio = 5)
     dut.ui_in.value = 0xA5
     dut.uio_in.value = 0b00000101
-    await ClockCycles(dut.clk, 2)
+    await ClockCycles(dut.clk, 1)
     await FallingEdge(dut.clk)
     assert get_val() == 0xA5, f"Load failed: expected 0xA5, got {hex(get_val())}"
 
     # 3. Up Count Test (load=0, up_down=1, en=1 -> uio = 6)
     dut.uio_in.value = 0b00000110
-    await ClockCycles(dut.clk, 2)
+    await ClockCycles(dut.clk, 1)
     await FallingEdge(dut.clk)
     assert get_val() == 0xA6, f"Up count failed: expected 0xA6, got {hex(get_val())}"
 
     # 4. Down Count Test (load=0, up_down=0, en=1 -> uio = 4)
     dut.uio_in.value = 0b00000100
-    await ClockCycles(dut.clk, 2)
+    await ClockCycles(dut.clk, 1)
     await FallingEdge(dut.clk)
     assert get_val() == 0xA5, f"Down count failed: expected 0xA5, got {hex(get_val())}"
 
@@ -57,7 +57,7 @@ async def test_counter_charter_d01(dut):
     # 6. Priority Test (load=1, up_down=1, en=1 -> uio = 7) [Ca bổ sung 1]
     dut.ui_in.value = 0x3C
     dut.uio_in.value = 0b00000111
-    await ClockCycles(dut.clk, 2)
+    await ClockCycles(dut.clk, 1)
     await FallingEdge(dut.clk)
     assert get_val() == 0x3C, f"Priority test failed: expected 0x3C, got {hex(get_val())}"
 
