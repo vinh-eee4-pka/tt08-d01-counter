@@ -21,14 +21,14 @@ module tt_um_d01_counter (
   always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       count_reg <= 8'h00;
-    end else if (!en) begin
-      count_reg <= count_reg;
     end else if (load) begin
       count_reg <= d_in;
-    end else if (up_down) begin
-      count_reg <= count_reg + 8'd1;
-    end else begin
-      count_reg <= count_reg - 8'd1;
+    end else if (en) begin
+      if (up_down) begin
+        count_reg <= count_reg + 8'd1;
+      end else begin
+        count_reg <= count_reg - 8'd1;
+      end
     end
   end
 
