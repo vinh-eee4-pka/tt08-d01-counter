@@ -23,4 +23,4 @@ VERILOG_SOURCES += $(PWD)/tb.v
 TOPLEVEL = tb
 MODULE = test
 
-include $(shell cocotb-config --makefiles)/makefile.sim
+include $(shell cocotb-config --makefiles)/Makefile.sim
