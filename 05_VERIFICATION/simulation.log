@@ -1,0 +1,3 @@
+VCD info: dumpfile d01_core.vcd opened for output.
+D01 core verification PASS
+05_VERIFICATION/testbench/d01_core_tb.sv:48: $finish called at 166 (1s)

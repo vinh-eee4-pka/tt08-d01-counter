@@ -1,24 +1,920 @@
-<h1 id="nh-t-k-v-k-ch-b-n-th-c-hi-n-d-n-nh-m-g02">NHẬT KÝ VÀ KỊCH BẢN THỰC HIỆN DỰ ÁN - NHÓM G02</h1>
-<h2 id="1-th-ng-tin-d-n">1. Thông tin Dự án</h2>
-<ul>
-<li><strong>Tên đề tài</strong>: d01 - Thiết kế Vi mạch Bộ đếm Nhị phân 8-bit Đa năng (Universal 8-bit Binary Counter)</li>
-<li><strong>Nhóm thực hiện</strong>: G02</li>
-<li><strong>Thành viên</strong>: Lư Quốc Vinh</li>
-</ul>
-<h2 id="2-k-ch-b-n-lu-ng-thi-t-k-design-flow-script-">2. Kịch bản Luồng Thiết kế (Design Flow Script)</h2>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D01 — Bộ đếm nhị phân 8-bit đa năng · Ghi chú thực hiện</title>
+<style>
+:root{
+  --bg:#ffffff; --fg:#1a1d21; --muted:#5c6570; --line:#e3e7eb;
+  --accent:#1f5fa9; --accent-soft:#eef4fb; --code-bg:#f5f7f9;
+  --ok:#137a4d; --ok-bg:#e8f6ee; --warn:#8a5a00; --warn-bg:#fdf4e2;
+  --bad:#a52020; --bad-bg:#fceded; --open:#7a5ba8; --open-bg:#f3eefa;
+  --maxw:960px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15181c; --fg:#e6e9ec; --muted:#98a2ad; --line:#2a2f36;
+    --accent:#6fa8e0; --accent-soft:#1c2733; --code-bg:#1b1f24;
+    --ok:#5cc08d; --ok-bg:#16291f; --warn:#d8a54a; --warn-bg:#2a2314;
+    --bad:#e88b8b; --bad-bg:#2b1a1a; --open:#b79ad6; --open-bg:#241d2e;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15181c; --fg:#e6e9ec; --muted:#98a2ad; --line:#2a2f36;
+  --accent:#6fa8e0; --accent-soft:#1c2733; --code-bg:#1b1f24;
+  --ok:#5cc08d; --ok-bg:#16291f; --warn:#d8a54a; --warn-bg:#2a2314;
+  --bad:#e88b8b; --bad-bg:#2b1a1a; --open:#b79ad6; --open-bg:#241d2e;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 16px 96px}
+header.doc{
+  border-bottom:1px solid var(--line); margin-bottom:28px; padding:36px 0 22px;
+}
+header.doc .eyebrow{
+  font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; margin-bottom:10px;
+}
+header.doc h1{font-size:clamp(24px,4.4vw,34px); line-height:1.25; margin:0 0 14px}
+.badges{display:flex; flex-wrap:wrap; gap:7px; margin-top:6px}
+.badge{
+  font-size:12.5px; padding:3px 10px; border-radius:999px;
+  border:1px solid var(--line); color:var(--muted); background:var(--accent-soft);
+  white-space:nowrap;
+}
+.badge.ok{color:var(--ok); background:var(--ok-bg); border-color:transparent}
+.badge.warn{color:var(--warn); background:var(--warn-bg); border-color:transparent}
+.badge.bad{color:var(--bad); background:var(--bad-bg); border-color:transparent}
+.badge.open{color:var(--open); background:var(--open-bg); border-color:transparent}
+nav.toc{
+  border:1px solid var(--line); border-radius:10px; padding:16px 20px;
+  margin:0 0 32px; background:var(--accent-soft);
+}
+nav.toc p{margin:0 0 8px; font-weight:700; font-size:13px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--muted)}
+nav.toc ul{margin:0; padding-left:20px}
+nav.toc li{margin:3px 0}
+nav.toc a{color:var(--fg); text-decoration:none}
+nav.toc a:hover{color:var(--accent); text-decoration:underline}
+nav.toc ul ul{padding-left:18px; font-size:14.5px}
+h2{font-size:22px; margin:40px 0 12px; padding-bottom:6px; border-bottom:1px solid var(--line)}
+h3{font-size:18px; margin:28px 0 8px}
+h4{font-size:16px; margin:22px 0 6px; color:var(--muted)}
+p{margin:12px 0}
+a{color:var(--accent)}
+ul,ol{padding-left:24px}
+li{margin:4px 0}
+code{
+  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  font-size:.9em; background:var(--code-bg); padding:1.5px 5px; border-radius:4px;
+}
+pre{
+  background:var(--code-bg); border:1px solid var(--line); border-radius:8px;
+  padding:14px 16px; overflow-x:auto; line-height:1.55; font-size:13.5px;
+}
+pre code{background:none; padding:0; font-size:inherit}
+blockquote{
+  margin:16px 0; padding:2px 18px; border-left:3px solid var(--accent);
+  background:var(--accent-soft); border-radius:0 8px 8px 0; color:var(--fg);
+}
+blockquote p{margin:10px 0}
+.tablewrap{overflow-x:auto; margin:16px 0; -webkit-overflow-scrolling:touch}
+table{border-collapse:collapse; width:100%; font-size:14.5px; min-width:420px}
+th,td{border:1px solid var(--line); padding:7px 11px; text-align:left; vertical-align:top}
+th{background:var(--accent-soft); font-weight:650; white-space:nowrap}
+tbody tr:nth-child(even) td{background:color-mix(in srgb, var(--code-bg) 55%, transparent)}
+hr{border:0; border-top:1px solid var(--line); margin:34px 0}
+footer.doc{
+  margin-top:56px; padding-top:18px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:13.5px;
+}
+.themebtn{
+  position:fixed; right:14px; bottom:14px; z-index:10;
+  border:1px solid var(--line); background:var(--bg); color:var(--muted);
+  border-radius:999px; padding:8px 14px; font-size:13px; cursor:pointer;
+}
+.themebtn:hover{color:var(--fg)}
+@media (max-width:640px){
+  .wrap{padding:0 16px 72px}
+  header.doc{padding:26px 0 18px}
+  nav.toc{padding:14px 16px}
+}
+@media print{
+  .themebtn{display:none}
+  nav.toc{break-inside:avoid}
+  pre,table,blockquote{break-inside:avoid}
+  body{font-size:11pt}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="doc">
+  <div class="eyebrow">RTL2GDS · Đề D01 · Ghi chú thực hiện</div>
+  <h1>D01 — Bộ đếm nhị phân 8-bit đa năng · Ghi chú thực hiện</h1>
+  <div class="badges"><span class="badge ">D · Bộ đếm và chia tần</span><span class="badge ">Độ khó: Trung bình (nhẹ)</span><span class="badge ">Loại mạch: Tuần tự</span><span class="badge ok">Mô phỏng: PASS</span><span class="badge ">Tổng hợp: 49 cell · 8 FF</span><span class="badge ">Đường tới hạn: 1,64 ns</span><span class="badge warn">Physical design: CHƯA CHẠY</span></div>
+</header>
+<nav class="toc"><p>Mục lục</p><ul><li><a href="#1-bai-toan-nay-thuc-chat-la-gi">1. Bài toán này thực chất là gì</a></li><li><a href="#2-ban-chat-ky-thuat-co-che-hoat-dong">2. Bản chất kỹ thuật — cơ chế hoạt động</a></li><ul><li><a href="#2-1-ba-tang-chon-xep-chong-va-thu-tu-xep-chong-la-thu-tu-uu-tien">2.1 Ba tầng chọn xếp chồng — và thứ tự xếp chồng là thứ tự ưu tiên</a></li><li><a href="#2-2-co-che-dang-ngac-nhien-nhat-up-khong-phai-tin-hieu-chon">2.2 Cơ chế đáng ngạc nhiên nhất: up không phải tín hiệu chọn</a></li><li><a href="#2-3-co-che-quan-trong-thu-hai-chuoi-carry-8-bit-chi-con-2-tang">2.3 Cơ chế quan trọng thứ hai: chuỗi carry 8 bit chỉ còn 2 tầng</a></li></ul><li><a href="#3-doc-ma-nguon-rtl-lam-gi-tung-dong-quan-trong">3. Đọc mã nguồn: RTL làm gì, từng dòng quan trọng</a></li><li><a href="#4-vi-sao-chon-kien-truc-nay">4. Vì sao chọn kiến trúc này</a></li><li><a href="#5-cach-thuc-hien-lo-trinh-8-buoc-tu-dac-ta-toi-gdsii">5. Cách thực hiện — lộ trình 8 bước từ đặc tả tới GDSII</a></li><li><a href="#6-so-lieu-that-da-do-duoc-va-cach-doc-chung">6. Số liệu thật đã đo được và cách đọc chúng</a></li><li><a href="#7-tra-loi-cac-cau-hoi-ky-thuat-cua-charter-muc-2">7. Trả lời các câu hỏi kỹ thuật của Charter (mục 2)</a></li><li><a href="#8-tra-loi-cau-phan-tich-rieng-charter-muc-9">8. Trả lời câu phân tích riêng (Charter mục 9)</a></li><li><a href="#9-nhung-cho-sinh-vien-hay-sai-va-cach-phat-hien">9. Những chỗ sinh viên hay sai và cách phát hiện</a></li><li><a href="#10-cau-hoi-mentor-nen-dat-khi-bao-ve">10. Câu hỏi mentor nên đặt khi bảo vệ</a></li><li><a href="#11-gioi-han-da-chung-minh-duoc-gi-chua-chung-minh-duoc-gi">11. Giới hạn: đã chứng minh được gì, chưa chứng minh được gì</a></li></ul></nav>
+<main>
+<blockquote>
+<p>⚠️ <strong>Đọc trước:</strong> RTL trong hồ sơ hiện thực <strong>ba trong bốn</strong> chức năng của một bộ đếm
+“đa năng”: đếm lên/xuống ✅, cho phép ✅, xoá ✅, <strong>nạp song song ❌</strong>. Danh sách đầy đủ
+6 điểm CHƯA THOẢ ở <code>02_SPECIFICATION/functional_spec.md</code> §0. RTL <strong>không bị sửa</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="1-bai-toan-nay-thuc-chat-la-gi">1. Bài toán này thực chất là gì</h2>
+<p>Bộ đếm là <strong>khối tuần tự đơn giản nhất còn có ý nghĩa</strong>, và chính vì thế nó là đề mẫu tốt
+nhất để luyện một kỹ năng cụ thể: <strong>đọc số ô nhớ trong báo cáo và giải thích được từng ô</strong>.
+Charter mục 10 nói thẳng điều đó — <em>“Đề mẫu để luyện đếm ô nhớ.”</em></p>
+<p>Nhìn từ góc lý thuyết, D01 là một <strong>máy trạng thái 256 trạng thái mà trạng thái chính là
+dữ liệu người dùng</strong>. Điều này phân biệt nó với C06 trong cùng bộ hồ sơ: ở C06,
+<code>window_count</code> cũng là bộ đếm 8 bit 256 trạng thái, nhưng ở đó trạng thái chỉ dùng để <strong>đo
+thời gian</strong>, còn dữ liệu nằm chỗ khác. Hệ quả rất thực tế: nếu một bit của C06 bị lật, máy
+<strong>tự phục hồi</strong> trong ≤ 256 chu kỳ; nếu một bit của D01 bị lật, <strong>giá trị sai vĩnh viễn</strong>
+cho tới lần reset. Cùng một cấu trúc, hai đặc tính chịu lỗi khác hẳn nhau.</p>
+<p>Từ góc ứng dụng (Charter mục 1: đếm sản phẩm trên băng chuyền, nạp giá trị đầu rồi đếm
+ngược để báo còn bao nhiêu suất), bài toán đòi <strong>bốn</strong> chế độ: nạp, đếm lên, đếm xuống,
+giữ — cộng xoá. Chữ <strong>“đa năng”</strong> trong tên đề chính là bốn chế độ đó. RTL hiện có ba.</p>
+<p>Cái khó thật của đề không phải phép cộng, mà là <strong>thứ tự ưu tiên giữa các chế độ</strong>. Charter
+mục 10 nêu đúng: <em>“Ưu tiên giữa nạp / xoá / đếm không rõ ràng → hành vi khác nhau giữa mô
+phỏng và tổng hợp.”</em></p>
+<h2 id="2-ban-chat-ky-thuat-co-che-hoat-dong">2. Bản chất kỹ thuật — cơ chế hoạt động</h2>
+<h3 id="2-1-ba-tang-chon-xep-chong-va-thu-tu-xep-chong-la-thu-tu-uu-tien">2.1 Ba tầng chọn xếp chồng — và thứ tự xếp chồng <strong>là</strong> thứ tự ưu tiên</h3>
+<p>Đường <code>D</code> của mỗi flip-flop đi qua ba tầng:</p>
+<pre><code>  count(Q) ─▶[① tăng/giảm: up]─▶[② mux giữ: enable]─▶[③ chặn xoá: rst_n]─▶ D ─▶ FF ─┐
+     ▲                                                                                │
+     └────────────────────────── vòng hồi tiếp ───────────────────────────────────────┘
+</code></pre>
+<p>Tầng nào <strong>gần flip-flop hơn</strong> thì ưu tiên cao hơn. Đây là cách đọc ưu tiên <strong>từ netlist</strong>,
+độc lập với việc tin vào cách đọc <code>if/else</code>. STA xác nhận đúng thứ tự đó trên đường tới hạn:
+<code>up</code> vào tại cell 1 (<code>_65_</code>), <code>enable</code> vào tại cell 3 (<code>_79_</code>), <code>rst_n</code> vào tại cell 5
+(<code>_81_</code>) — ngay sát flip-flop <code>_89_</code>.</p>
+<p>Vòng hồi tiếp <code>Q → D</code> là thứ làm D01 thành mạch tuần tự <strong>thật</strong>. So với C07 trong cùng bộ
+hồ sơ, nơi <code>Q</code> của flip-flop duy nhất <strong>không</strong> quay lại: C07 chỉ là mạch tổ hợp có đăng ký
+đầu ra, còn D01 có trạng thái thật.</p>
+<h3 id="2-2-co-che-dang-ngac-nhien-nhat-up-khong-phai-tin-hieu-chon">2.2 Cơ chế đáng ngạc nhiên nhất: <code>up</code> <strong>không phải</strong> tín hiệu chọn</h3>
+<p>Đọc RTL thấy <code>if (up) count+1; else count-1;</code> và kết luận tự nhiên là: <em>có hai mạch số học,
+<code>up</code> là mux chọn giữa hai kết quả</em>. <strong>Netlist nói khác.</strong></p>
+<p>Lập luận toán học: trong số học modulo 256, <code>count − 1 ≡ count + 0xFF</code>. Vậy <strong>cả hai</strong> nhánh
+là “cộng với một hằng số”, chỉ khác giá trị hằng. <code>up</code> không cần chọn giữa hai <strong>cây carry</strong>
+— nó chỉ cần thay đổi <strong>giá trị đầu vào</strong> của cùng một cây.</p>
+<p>Bằng chứng trực tiếp trong netlist — cell đầu tiên trên đường tới hạn:</p>
+<pre><code class="language-verilog">sky130_fd_sc_hd__nor2_1 _65_ ( .A(count[4]), .B(up), .Y(_27_) );
+</code></pre>
+<p><code>up</code> đi vào chân <code>.B</code> của một <code>nor2_1</code>, <strong>ngang hàng</strong> với <code>count[4]</code> — tức nó là một toán
+hạng dữ liệu bình thường. Nếu <code>up</code> thực sự là tín hiệu chọn, ta sẽ thấy nó ở chân <code>S</code> của
+8 cell <code>mux2i_1</code>; netlist chỉ có <strong>2</strong> cell <code>mux2i_1</code> trong toàn bộ 49 cell.</p>
+<p><strong>Hệ quả số lượng:</strong> không phải dựng hai cây số học rồi ghép mux 8 bit ⇒ chỉ <strong>49 cell</strong>.
+Đây nhiều khả năng là một phần nguyên nhân khiến kết quả thấp hơn hẳn ước lượng 110–160 của
+Charter.</p>
+<blockquote>
+<p><strong>Bài học tổng quát:</strong> <em>đừng suy ra cấu trúc phần cứng từ hình dạng <code>if/else</code> trong RTL.</em>
+Trình tổng hợp làm việc trên <strong>hàm logic</strong>, không trên cú pháp.</p>
+</blockquote>
+<h3 id="2-3-co-che-quan-trong-thu-hai-chuoi-carry-8-bit-chi-con-2-tang">2.3 Cơ chế quan trọng thứ hai: chuỗi carry 8 bit chỉ còn <strong>2 tầng</strong></h3>
+<p>Một bộ đếm ripple “sách giáo khoa” có carry lan qua 7–8 tầng nối tiếp. STA thật cho thấy
+MSB chỉ cách <code>up</code> <strong>5 cell logic</strong>, tổng <strong>0,64 ns</strong>.</p>
+<p>Lý do có tính nguyên lý: carry vào bit <code>k</code> của phép <code>+1</code> là <strong>hàm AND thuần</strong> của các bit
+thấp hơn (<code>c_k = x[0] AND x[1] AND … AND x[k−1]</code>). Mà AND thì <strong>gom được thành cây</strong>. <code>abc</code>
+dùng cell 4 đầu vào — netlist có tổng cộng <strong>8</strong> cell loại đó (<code>nor4_1 × 3</code>, <code>nor4b_1</code>,
+<code>or4_1</code>, <code>nand4_1</code>, …) — mỗi cell xử lý 4 bit cùng lúc, nên độ sâu giảm từ 8 xuống 2.</p>
+<p>Ví dụ cụ thể trên đường tới hạn:</p>
+<pre><code class="language-verilog">sky130_fd_sc_hd__nor4b_1 _77_ ( .A(count[6]), .B(count[5]), .C(_22_), .D_N(_27_), .Y(_37_) );
+//                                 ▲ gom BỐN tín hiệu trong MỘT cell
+</code></pre>
+<p>So sánh trực tiếp với <strong>A01</strong> trong cùng bộ hồ sơ: ở A01, tên đề chỉ định “ripple-carry”
+nên RTL mô tả chuỗi full adder <strong>tường minh</strong>, và công cụ buộc phải giữ 8 tầng nối tiếp. Ở
+D01, RTL dùng toán tử <code>+</code>/<code>-</code> nên công cụ <strong>được tự do</strong> — và nó chọn cây.</p>
+<blockquote>
+<p><em>Mô tả hành vi cho trình tổng hợp quyền chọn cấu trúc; mô tả cấu trúc tường minh thì tước
+quyền đó.</em> Hai đề dạy hai mặt của cùng nguyên lý, và STA là nơi thấy khác biệt bằng số.</p>
+</blockquote>
+<h2 id="3-doc-ma-nguon-rtl-lam-gi-tung-dong-quan-trong">3. Đọc mã nguồn: RTL làm gì, từng dòng quan trọng</h2>
+<p>Toàn bộ thiết kế là <strong>20 dòng</strong>. Đoạn quan trọng:</p>
+<pre><code class="language-systemverilog">always_ff @(posedge clk) begin        // ① KHÔNG có `or negedge rst_n`
+    if (!rst_n)                        // ② ưu tiên 1
+        count &lt;= 8'd0;
+    else if (enable) begin             // ③ ưu tiên 2
+        if (up)                        // ④ ưu tiên 3
+            count &lt;= count + 8'd1;
+        else
+            count &lt;= count - 8'd1;
+    end                                // ⑤ KHÔNG có else cuối → giữ nguyên
+end
+</code></pre>
+<p><strong>① Danh sách nhạy chỉ có <code>posedge clk</code></strong> — đây là dòng quyết định rằng reset là <strong>đồng
+bộ</strong>. Nếu viết <code>@(posedge clk or negedge rst_n)</code>, Yosys sẽ chọn cell <code>dfrtp_1</code> có chân
+<code>RESET_B</code> thay vì <code>dfxtp_1</code>. Một từ khoá trong danh sách nhạy đổi hẳn loại cell được dùng.</p>
+<p><strong>② → ③ → ④: <code>if / else if</code> lồng nhau trong MỘT khối <code>always_ff</code>.</strong> Đây là lý do D01 <strong>miễn
+nhiễm</strong> với rủi ro mà Charter mục 10 cảnh báo. Sự khác biệt “mô phỏng ≠ tổng hợp” đến từ ba
+thói quen cụ thể mà D01 đều tránh: (a) tách điều kiện ra nhiều khối <code>always</code> cùng ghi một
+biến; (b) dùng <code>casex</code>/<code>casez</code> với <code>X</code>/<code>Z</code>; (c) thiếu nhánh trong <code>always_comb</code> → suy ra
+latch.</p>
+<p><strong>⑤ Thiếu <code>else</code> cuối là HỢP LỆ và ĐÚNG ở đây.</strong> Trong <code>always_ff</code>, thiếu nhánh có nghĩa
+“flip-flop giữ giá trị cũ” — chính xác là hành vi mong muốn. (Ngược lại, thiếu nhánh trong
+<code>always_comb</code> sẽ suy ra <strong>latch</strong>, một lỗi thật.) Netlist xác nhận không có latch nào:
+<code>synth_stat.txt</code> chỉ có <code>dfxtp_1</code>.</p>
+<p><strong>Và đây là điều RTL <em>không</em> làm:</strong> không nạp, không báo tràn, không đồng bộ tín hiệu vào,
+không tách cạnh cho <code>enable</code>.</p>
+<h2 id="4-vi-sao-chon-kien-truc-nay">4. Vì sao chọn kiến trúc này</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Quyết định</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bộ đếm đồng bộ</strong> (một clock cho cả 8 FF)</td>
+<td>Bắt buộc với quy trình RTL→GDSII tự động. Bộ đếm ripple (dùng <code>Q</code> làm clock) khiến STA không phân tích được, CTS không xử lý được, và các bit lệch pha nên <code>FF → 00</code> đi qua các giá trị trung gian <strong>sai</strong></td>
+</tr>
+<tr>
+<td><strong>Mô tả hành vi</strong> (<code>+</code>, <code>-</code>) thay vì mô tả cấu trúc</td>
+<td>Cho <code>abc</code> quyền dựng cây carry. Kết quả đo: 5 tầng logic, 0,64 ns cho MSB</td>
+</tr>
+<tr>
+<td><strong>Xoá đồng bộ</strong></td>
+<td>Miễn nhiễm với glitch trên <code>rst_n</code> (bị flip-flop lọc); không cần kiểm recovery/removal. Giá: +8 cell (16 %) và +0,13 ns (20 % logic)</td>
+</tr>
+<tr>
+<td><strong>Ưu tiên <code>rst_n</code> &gt; <code>enable</code> &gt; <code>up</code></strong></td>
+<td>Reset phải là lối thoát tuyệt đối. Nếu <code>enable</code> lên trước, <code>enable = 0</code> sẽ chặn được cả reset</td>
+</tr>
+<tr>
+<td><strong>Quấn vòng</strong>, không bão hoà</td>
+<td>Đặc tả chốt số học modulo 256. Bão hoà là hành vi khác, thuộc đề khác</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="5-cach-thuc-hien-lo-trinh-8-buoc-tu-dac-ta-toi-gdsii">5. Cách thực hiện — lộ trình 8 bước từ đặc tả tới GDSII</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">Bước</th>
+<th>Việc</th>
+<th>Đầu ra</th>
+<th style="text-align: center;">Trạng thái</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td>Lập <strong>bảng hành vi 4 hàng</strong> phủ toàn bộ 8 tổ hợp <code>(rst_n, enable, up)</code>; chốt bảng ưu tiên</td>
+<td><code>functional_spec.md</code> §3</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td>Viết mô hình chuẩn Python <strong>quét vét cạn</strong> 256 × 2 × 2 = 1024 trạng thái</td>
+<td><code>reference_model.py</code> — PASS</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td>Viết RTL: một <code>always_ff</code>, <code>if/else if</code> lồng nhau</td>
+<td><code>d01_core.sv</code> (20 dòng)</td>
+<td style="text-align: center;">🟡 <strong>thiếu chức năng NẠP</strong></td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td>Viết testbench so song song với mô hình chuẩn SV; dùng nạp cưỡng bức để tới biên tràn</td>
+<td><code>d01_core_tb.sv</code> — <strong>PASS</strong>, 17 cạnh</td>
+<td style="text-align: center;">🟡 phủ <strong>4/5</strong> ca bắt buộc</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td>Tổng hợp; <strong>đếm FF và giải thích từng ô</strong></td>
+<td>49 cell · <strong>8 FF</strong> · 427,9104 µm²</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td>SDC + STA; đọc kỹ dòng <code>input external delay</code></td>
+<td>arrival 1,64 ns · slack 8,24 ns</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td>Ước lượng công suất; đọc tỷ lệ tuần tự/tổ hợp</td>
+<td>5,41e-05 W · tuần tự 74,4 %</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td>P&amp;R bằng LibreLane + PDK sky130A, rồi STA <strong>sau routing</strong></td>
+<td>—</td>
+<td style="text-align: center;">⬜ <strong>CHƯA CHẠY</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Bước 5 là mục đích tồn tại của đề này.</strong> Dự đoán từ RTL: 8 FF cho <code>count</code>, không có thanh
+ghi nào khác ⇒ <strong>8</strong>. Yosys cho <strong>8</strong>. Khớp tuyệt đối. Nếu lệch, hoặc đọc RTL sai, hoặc có
+tín hiệu bị suy ra latch — cả hai đều là lỗi đáng tìm.</p>
+<p><strong>Bước 8 chưa chạy là lý do câu hỏi 3 của Charter mục 2 chưa trả lời được</strong> — xem §7.</p>
+<h2 id="6-so-lieu-that-da-do-duoc-va-cach-doc-chung">6. Số liệu thật đã đo được và cách đọc chúng</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Chỉ số</th>
+<th style="text-align: right;">Giá trị</th>
+<th>Công cụ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mô hình Python (vét cạn 1024 trạng thái)</td>
+<td style="text-align: right;">PASS</td>
+<td>CPython 3</td>
+</tr>
+<tr>
+<td>Mô phỏng RTL (17 cạnh, so với <code>d01_reference</code>)</td>
+<td style="text-align: right;"><strong>PASS</strong></td>
+<td>Icarus Verilog 12.0</td>
+</tr>
+<tr>
+<td>Số cell</td>
+<td style="text-align: right;"><strong>49</strong></td>
+<td>Yosys 0.33</td>
+</tr>
+<tr>
+<td>Flip-flop</td>
+<td style="text-align: right;"><strong>8</strong></td>
+<td>Yosys 0.33</td>
+</tr>
+<tr>
+<td>Diện tích</td>
+<td style="text-align: right;"><strong>427,9104 µm²</strong></td>
+<td>Yosys 0.33</td>
+</tr>
+<tr>
+<td>Đường tới hạn</td>
+<td style="text-align: right;"><code>up</code> → <code>_89_</code> (= <code>count[7]</code>), <strong>6 cell</strong></td>
+<td>OpenSTA 3.1.0</td>
+</tr>
+<tr>
+<td>Data arrival</td>
+<td style="text-align: right;"><strong>1,64 ns</strong></td>
+<td>OpenSTA 3.1.0</td>
+</tr>
+<tr>
+<td>Data required</td>
+<td style="text-align: right;"><strong>9,88 ns</strong> (= 10,00 − 0,12 setup)</td>
+<td>OpenSTA 3.1.0</td>
+</tr>
+<tr>
+<td>Slack</td>
+<td style="text-align: right;"><strong>8,24 ns</strong> (MET) · WNS/TNS 0,00</td>
+<td>OpenSTA 3.1.0</td>
+</tr>
+<tr>
+<td>Công suất</td>
+<td style="text-align: right;"><strong>5,41e-05 W</strong> · tuần tự <strong>74,4 %</strong> · tổ hợp 25,6 %</td>
+<td>OpenSTA 3.1.0</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Những số này CHỨNG MINH được:</strong> bộ đếm lên/xuống có enable và xoá đồng bộ hoạt động đúng
+trên 17 cạnh đã thử, kể cả cả hai biên quấn vòng; nó tổng hợp được thành 49 standard cell
+sky130 với <strong>đúng 8</strong> ô nhớ; và với ràng buộc giả định, đường dài nhất còn dư 8,24 ns.</p>
+<p><strong>Những số này KHÔNG chứng minh:</strong></p>
 <ol>
-<li><strong>01_REQUIREMENT</strong>: Phân tích yêu cầu bài toán bộ đếm 8-bit tích hợp Up/Down, Load, Hold.</li>
-<li><strong>02_SPECIFICATION</strong>: Định nghĩa Pinout, ưu tiên tín hiệu điều khiển và cờ trạng thái <code>max_tick</code>/<code>min_tick</code>.</li>
-<li><strong>03_ARCHITECTURE</strong>: Thiết kế sơ đồ khối Datapath (Thanh ghi + Bộ cộng/trừ 8-bit) và Controlpath.</li>
-<li><strong>04_IMPLEMENTATION</strong>: Lập trình RTL Verilog có chú thích Tiếng Việt, gán ràng buộc SDC (100MHz), chạy Synthesis và xuất Layout GDSII.</li>
-<li><strong>05_VERIFICATION</strong>: Viết Testbench kiểm thử đầy đủ các chế độ, xuất báo cáo STA (Slack &gt;= 0) và kiểm tra vật lý DRC/LVS.</li>
-<li><strong>08_ORIGINAL_SOURCE</strong>: Lưu trữ tài liệu tham khảo gốc.</li>
+<li><strong>Không chứng minh khối thoả đề D01.</strong> Thiếu chức năng nạp — mà đó là chữ “đa năng”
+   trong tên đề và là bối cảnh ứng dụng của Charter mục 1.</li>
+<li><strong>Không chứng minh tần số tối đa.</strong> Chưa ký sinh RC, chưa CTS (skew = 0), một góc PVT.</li>
+<li><strong>Không chứng minh đường reg→reg an toàn.</strong> Cả hai đường đầu bảng đều là <strong>in→reg</strong> từ
+   <code>up</code>, chỉ vì <code>set_input_delay = 1,0 ns</code> lớn hơn <code>t_ckq</code>. Đường reg→reg không xuất hiện
+   trong top paths <strong>không</strong> có nghĩa nó nhanh.</li>
+<li><strong>Không chứng minh ưu tiên được kiểm đủ.</strong> Ca ưu tiên ở cạnh 17 chạy khi <code>count = FF</code>,
+   nơi nhánh đúng (xoá → <code>00</code>) và nhánh sai (đếm lên → <code>FF+1 = 00</code>) <strong>cho cùng kết quả</strong> —
+   xem <code>timing_diagram.md</code> §3.</li>
+<li><strong>Công suất là ước lượng với hoạt động mặc định</strong>, không phải VCD thật. Với D01, hoạt
+   động thật phụ thuộc rất mạnh vào <code>enable</code>.</li>
 </ol>
-<h2 id="3-nh-t-k-ti-n-chi-ti-t">3. Nhật ký Tiến độ Chi tiết</h2>
-<ul>
-<li><strong>Giai đoạn 1</strong>: Khởi tạo cấu trúc dự án và viết tài liệu SPEC chuẩn Tiếng Việt cho đề tài d01.</li>
-<li><strong>Giai đoạn 2</strong>: Lập trình khối <code>d01_counter_8bit.v</code> và viết Testbench <code>tb_d01_counter_8bit.v</code>.</li>
-<li><strong>Giai đoạn 3</strong>: Tổng hợp logic (Synthesis) thu được <code>synthesis_report.rpt</code>.</li>
-<li><strong>Giai đoạn 4</strong>: Chạy phân tích Timing STA thu được $WNS = +1.12\text{ ns}$ (Đạt).</li>
-<li><strong>Giai đoạn 5</strong>: Thực hiện Layout vật lý, chạy DRC (0 Error), LVS Match và xuất file <code>layout.gds</code>.</li>
-</ul>
+<p><strong>Chi tiết hay bị báo sai:</strong> trong 1,64 ns arrival có <strong>1,00 ns là <code>set_input_delay</code></strong> —
+một giả định trong SDC. Phần do mạch gây ra chỉ <strong>0,64 ns</strong>. Báo “D01 mất 1,64 ns” là báo
+sai <strong>156 %</strong>.</p>
+<h2 id="7-tra-loi-cac-cau-hoi-ky-thuat-cua-charter-muc-2">7. Trả lời các câu hỏi kỹ thuật của Charter (mục 2)</h2>
+<p><strong>Câu 1 — Số ô nhớ dự đoán là 8; nếu báo cáo ra nhiều hơn thì phần dư dùng vào việc gì?</strong></p>
+<p>Dự đoán: <strong>8</strong>. Đo được: <strong>8</strong> (<code>synth_stat.txt</code>: <code>sky130_fd_sc_hd__dfxtp_1 8</code>). <strong>Không có
+phần dư.</strong></p>
+<p>Bóc tách bằng tên instance thật trong netlist:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>FF</th>
+<th>Instance</th>
+<th><code>Q</code> nối tới</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>_82_</code></td>
+<td><code>count[0]</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>_83_</code></td>
+<td><code>count[1]</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>_84_</code></td>
+<td><code>count[2]</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>_85_</code></td>
+<td><code>count[3]</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>_86_</code></td>
+<td><code>count[4]</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>_87_</code></td>
+<td><code>count[5]</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>_88_</code></td>
+<td><code>count[6]</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>_89_</code></td>
+<td><code>count[7]</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Vì sao không có phần dư — và vì sao đó vừa là điểm tốt vừa là điểm thiếu:</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Thứ có thể tốn thêm FF</th>
+<th style="text-align: center;">Có trong D01?</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cờ tràn / quấn vòng</td>
+<td style="text-align: center;">❌</td>
+<td>Charter mục 10 gợi ý “1–2 cho cờ tràn” nhưng mục 4 <strong>không cấp chân ra</strong> cho nó — hai mục của Charter không nhất quán</td>
+</tr>
+<tr>
+<td>Thanh ghi giữ <code>load_val</code></td>
+<td style="text-align: center;">❌</td>
+<td>Không cần — nạp chỉ cần mux, <strong>+0 FF</strong></td>
+</tr>
+<tr>
+<td>Thanh ghi đồng bộ hoá <code>enable</code>/<code>up</code></td>
+<td style="text-align: center;">❌</td>
+<td><strong>Nghĩa vụ tầng ngoài</strong></td>
+</tr>
+<tr>
+<td>Thanh ghi pipeline đầu ra</td>
+<td style="text-align: center;">❌</td>
+<td>Không cần</td>
+</tr>
+<tr>
+<td>Latch do thiếu nhánh trong <code>always_comb</code></td>
+<td style="text-align: center;">❌</td>
+<td>Không có <code>always_comb</code> nào; netlist chỉ có <code>dfxtp_1</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Câu hỏi giả định của Charter (<em>“nếu nhiều hơn 8”</em>) có ba đáp án thường gặp: cờ tràn, thanh
+ghi đồng bộ hoá, và <strong>latch do lỗi mã</strong>. Đáp án thứ ba là quan trọng nhất về mặt dạy học:
+nếu báo cáo ra 9–10 FF mà không giải thích được, khả năng cao là có latch bị suy ra ngoài ý
+muốn — kiểm bằng cách tìm cell <code>dlxtp</code>/<code>dlatch</code> trong <code>synth_stat.txt</code>.</p>
+<p><strong>Câu 2 — Xoá đồng bộ khác xoá bất đồng bộ ở chỗ nào trong netlist?</strong></p>
+<p>Đây là câu D01 trả lời được bằng bằng chứng cụ thể nhất.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Đồng bộ (D01 đang dùng)</strong></th>
+<th>Bất đồng bộ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mã RTL</td>
+<td><code>@(posedge clk)</code> + <code>if (!rst_n)</code></td>
+<td><code>@(posedge clk or negedge rst_n)</code></td>
+</tr>
+<tr>
+<td><strong>Cell FF được chọn</strong></td>
+<td><strong><code>sky130_fd_sc_hd__dfxtp_1</code></strong> — chân <code>CLK</code>, <code>D</code>, <code>Q</code>; <strong>không có chân reset</strong></td>
+<td><code>sky130_fd_sc_hd__dfrtp_1</code> — thêm chân <strong><code>RESET_B</code></strong></td>
+</tr>
+<tr>
+<td><strong><code>rst_n</code> nằm ở đâu</strong></td>
+<td><strong>Trong cụm logic tổ hợp trên đường <code>D</code></strong></td>
+<td><strong>Trên chân <code>RESET_B</code></strong>, không xuất hiện trong cụm <code>D</code></td>
+</tr>
+<tr>
+<td>Cell tổ hợp thêm</td>
+<td><strong>+8</strong> (7 × <code>and2_0</code> + 1 × <code>lpflow_isobufsrc_1</code>) ≈ <strong>16 %</strong> của 49 cell</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Có trên đường tới hạn không</td>
+<td><strong>Có</strong> — <code>_81_</code> cộng <strong>0,13 ns</strong> (≈ 20 % của 0,64 ns logic)</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Khi clock đứng yên</td>
+<td><strong>KHÔNG xoá được</strong></td>
+<td>Xoá ngay</td>
+</tr>
+<tr>
+<td>Kiểm timing thêm</td>
+<td>Không</td>
+<td><strong>Recovery / removal</strong></td>
+</tr>
+<tr>
+<td>Glitch trên <code>rst_n</code></td>
+<td>Bị flip-flop <strong>lọc</strong></td>
+<td>Đi thẳng vào FF → reset giả</td>
+</tr>
+</tbody>
+</table></div>
+<p>Trích netlist làm bằng chứng:</p>
+<pre><code class="language-verilog">sky130_fd_sc_hd__and2_0  _81_ ( .A(rst_n), .B(_40_), .X(_07_) );   // rst_n như DỮ LIỆU
+sky130_fd_sc_hd__dfxtp_1 _89_ ( .CLK(clk), .D(_07_), .Q(count[7]) ); // FF không có chân reset
+</code></pre>
+<p><strong>Cách kiểm trong 10 giây:</strong> mở <code>synth_stat.txt</code>, xem tên cell tuần tự. <code>dfxtp_1</code> (không
+hậu tố) ⇒ reset <strong>đồng bộ</strong> hoặc không có reset. <code>dfrtp_1</code>/<code>dfstp_1</code> ⇒ có chân reset <strong>bất
+đồng bộ</strong>. Ở D01 chỉ có <code>dfxtp_1 × 8</code>.</p>
+<p><strong>Câu 3 — Bộ đếm chạy được tối đa bao nhiêu MHz, và con số đó lấy ở đâu ra?</strong></p>
+<p><strong>Đáp án trung thực: KHÔNG lấy được từ dữ liệu hiện có.</strong> Đây là câu hỏi bẫy hay nhất trong
+cả bộ hồ sơ, và đáp án đúng là giải thích <strong>vì sao</strong> chưa trả lời được.</p>
+<p>Con số duy nhất đang có là slack <strong>8,24 ns</strong> ở chu kỳ giả định <strong>10 ns</strong>. Phép tính ngây thơ
+<code>1 / (10 − 8,24) ns = 568 MHz</code> <strong>sai</strong> vì ít nhất bốn lý do:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Lý do</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sai loại đường</strong></td>
+<td>Đường được báo là <strong>in→reg</strong> (từ <code>up</code>), và nó chứa <strong>1,00 ns <code>set_input_delay</code> giả định</strong>. Tần số tối đa của một bộ đếm do đường <strong>reg→reg</strong> (<code>count → count</code>) quyết định, mà đường đó <strong>không</strong> xuất hiện trong top paths</td>
+</tr>
+<tr>
+<td><strong>Clock lý tưởng</strong></td>
+<td>Chưa CTS ⇒ <code>clock network delay (ideal)</code>, <code>skew = 0</code>. Skew thật sẽ ăn vào biên</td>
+</tr>
+<tr>
+<td><strong>Không có ký sinh RC</strong></td>
+<td>Chưa routing ⇒ chưa có điện trở/điện dung dây. Độ trễ thật sẽ <strong>lớn hơn</strong></td>
+</tr>
+<tr>
+<td><strong>Một góc PVT</strong></td>
+<td>Chỉ <code>tt_025C_1v80</code> (typical, 25 °C, 1,80 V). Góc <code>ss</code> chậm hơn đáng kể</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Để có con số thật cần:</strong> chạy P&amp;R (bước 8, ⬜ chưa chạy), rồi STA <strong>sau routing</strong> với SPEF
+thật, ở <strong>nhiều góc PVT</strong>, và đọc slack của đường <strong>reg→reg</strong> ở góc chậm nhất. Công thức
+đúng:</p>
+<pre><code> f_max = 1 / ( t_ckq + t_logic_max + t_setup + t_skew )
+</code></pre>
+<p>trong đó mọi số hạng lấy từ góc <strong>xấu nhất</strong>, không phải từ <code>tt</code>.</p>
+<p>Phát biểu duy nhất được phép từ dữ liệu hiện có: <em>“Ở góc <code>tt_025C_1v80</code>, sau tổng hợp, với
+clock lý tưởng và <code>set_input_delay = 1,0 ns</code>, đường in→reg dài nhất có arrival 1,64 ns và
+slack 8,24 ns so với chu kỳ giả định 10 ns.”</em></p>
+<h2 id="8-tra-loi-cau-phan-tich-rieng-charter-muc-9">8. Trả lời câu phân tích riêng (Charter mục 9)</h2>
+<blockquote>
+<p><em>“Đếm chính xác số flip-flop trong báo cáo sử dụng cell. Nếu nhiều hơn 8, tìm xem số dư
+dùng vào việc gì (thường là chốt cờ tràn).”</em></p>
+</blockquote>
+<p><strong>Kết quả đếm chính xác: đúng 8 flip-flop. Không có số dư.</strong></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Nguồn bằng chứng</th>
+<th style="text-align: right;">Con số</th>
+<th>Trích dẫn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>06_GDSII/synthesis/synth_stat.txt</code></td>
+<td style="text-align: right;"><strong>8</strong></td>
+<td><code>sky130_fd_sc_hd__dfxtp_1        8</code></td>
+</tr>
+<tr>
+<td><code>06_GDSII/synthesis/netlist.v</code></td>
+<td style="text-align: right;"><strong>8</strong> instance</td>
+<td><code>_82_</code>, <code>_83_</code>, <code>_84_</code>, <code>_85_</code>, <code>_86_</code>, <code>_87_</code>, <code>_88_</code>, <code>_89_</code></td>
+</tr>
+<tr>
+<td>Đọc RTL</td>
+<td style="text-align: right;"><strong>8</strong></td>
+<td><code>output logic [7:0] count</code>, là biến duy nhất trong <code>always_ff</code></td>
+</tr>
+<tr>
+<td>Loại cell tuần tự khác (latch)?</td>
+<td style="text-align: right;"><strong>0</strong></td>
+<td>Không có <code>dlxtp</code>/<code>dlatch</code> nào trong <code>synth_stat.txt</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Ánh xạ 1-1 giữa instance và bit đã lập ở §7 câu 1 — mọi ô nhớ đều giải thích được, không
+còn ô nào không rõ nguồn gốc.</p>
+<p><strong>Ba kết luận rút ra:</strong></p>
+<ol>
+<li><strong>Không có cờ tràn.</strong> Charter mục 9 dự đoán phần dư “thường là chốt cờ tràn”, nhưng ở
+   đây không có phần dư vì <strong>không có cờ tràn nào được hiện thực</strong>. Điều này đối chiếu với
+   Charter mục 10 (“8 ô nhớ + 1–2 cho cờ tràn” ⇒ 9–10) cho thấy <strong>W-4 CHƯA THOẢ</strong>. Lưu ý
+   thêm: Charter mục 4 <strong>cũng không cấp chân ra</strong> cho cờ tràn (<code>uo_out[7:0]</code> đã dành hết cho
+   <code>count</code>), nên hai mục của Charter không nhất quán — <strong>cần thầy chốt</strong>.</li>
+<li><strong>Chức năng nạp không làm tăng số ô nhớ.</strong> Đây là điểm dễ hiểu nhầm: thêm <code>load</code> và
+   <code>load_val[7:0]</code> chỉ cần <strong>một tầng mux 8 bit</strong> trước <code>D</code>, <strong>+0 flip-flop</strong>. Vì vậy con số
+   8 <strong>không</strong> phải bằng chứng cho việc thiếu chức năng nạp — bằng chứng cho W-1 phải lấy từ
+   <strong>danh sách cổng</strong> (<code>d01_core</code> chỉ có 4 cổng vào), không từ số FF.</li>
+<li><strong>Con số 8 là dấu hiệu tốt cho phần đã làm.</strong> Nó chứng minh không có latch bị suy ra
+   ngoài ý muốn, không có thanh ghi thừa, và RTL nhất quán với đặc tả.</li>
+</ol>
+<p><strong>Kiểm chứng ngược để chắc chắn:</strong> 49 cell − 8 FF = <strong>41 cell tổ hợp</strong> cho một mạch
+tăng/giảm 8 bit + mux <code>enable</code> + chặn <code>rst_n</code>. Bóc tách sơ bộ: 8 cell chặn <code>rst_n</code>
+(7 × <code>and2_0</code> + 1 × <code>lpflow_isobufsrc_1</code>), 5 cell <code>o21ai_0</code> cho mux <code>enable</code>, 9 cell
+<code>xnor2_1</code>/<code>xor2_1</code> sinh bit tổng, 8 cell 4-đầu-vào (<code>nor4_1 × 3</code>, <code>nor3_1 × 3</code>, <code>nor4b_1</code>,
+<code>or4_1</code>, <code>nand4_1</code>) tạo cây carry, còn lại là cell phụ trợ. Tổng khớp với cấu trúc ba tầng
+mô tả ở §2.1 — <strong>không có cụm cell nào không giải thích được</strong>.</p>
+<h2 id="9-nhung-cho-sinh-vien-hay-sai-va-cach-phat-hien">9. Những chỗ sinh viên hay sai và cách phát hiện</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Sai lầm</th>
+<th>Hậu quả</th>
+<th>Phát hiện bằng bằng chứng nào</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Viết <code>@(posedge clk or negedge rst_n)</code> rồi vẫn gọi là “xoá đồng bộ”</td>
+<td>Nhầm lẫn khái niệm; kiểm tra timing thiếu recovery/removal</td>
+<td><code>synth_stat.txt</code>: xuất hiện <code>dfrtp_1</code> thay vì <code>dfxtp_1</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Đặt ưu tiên <code>enable</code> <strong>trước</strong> <code>rst_n</code></td>
+<td><code>enable = 0</code> chặn được cả reset — <strong>reset không hoạt động</strong> khi khối đang tạm dừng</td>
+<td>Ca ưu tiên với <code>count</code> ở giá trị <strong>khác <code>FF</code></strong> (TC-B5). ⚠️ Ca hiện có ở cạnh 17 chạy khi <code>count = FF</code> nên <strong>không phân biệt được</strong> — xem <code>timing_diagram.md</code> §3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Dùng hai khối <code>always_ff</code> riêng cho reset và cho đếm</td>
+<td>Multiple driver — tổng hợp báo lỗi hoặc tự chọn, mô phỏng phụ thuộc thứ tự lập lịch</td>
+<td>Log Yosys; hoặc mô phỏng cho kết quả khác nhau giữa hai công cụ</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Viết <code>always_comb</code> cho logic kế tiếp mà thiếu nhánh</td>
+<td>Suy ra <strong>latch</strong> — số “flip-flop” trong báo cáo nhảy lên khó hiểu</td>
+<td><code>synth_stat.txt</code>: xuất hiện <code>dlxtp</code>/<code>dlatch</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Tưởng <code>if (up) …+1 else …-1</code> sinh ra <strong>hai</strong> mạch số học</td>
+<td>Ước lượng diện tích sai gấp đôi; hiểu sai đường tới hạn</td>
+<td>Netlist: chỉ <strong>2</strong> cell <code>mux2i_1</code> trong 49 cell; <code>up</code> đi vào chân dữ liệu <code>.B</code> của <code>nor2_1</code>, không phải chân <code>S</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Tưởng carry của bộ đếm 8 bit phải lan qua 8 tầng</td>
+<td>Ước lượng độ trễ sai; hoang mang khi thấy slack lớn</td>
+<td>STA: chỉ <strong>5 cell logic</strong>, 0,64 ns. <code>abc</code> gom carry thành cây (<code>nor4b_1</code> gom 4 tín hiệu)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Dùng <code>enable</code> như <strong>xung</strong> thay vì <strong>mức</strong></td>
+<td>Một sản phẩm che tia trong 1000 chu kỳ bị đếm thành <strong>1000</strong></td>
+<td>Đọc RTL: không có tách cạnh nào. Ca: giữ <code>enable = 1</code> nhiều chu kỳ rồi đếm <code>count</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Quên đồng bộ <code>enable</code>/<code>up</code> từ cảm biến vật lý</td>
+<td>Metastability làm <strong>nhiều bit</strong> lấy giá trị khác nhau → <code>count</code> nhảy sang giá trị sai, không phải <code>±1</code></td>
+<td>Đọc RTL: không có tầng đồng bộ. Lỗi hiếm, không tái lập được, mô phỏng RTL <strong>không bắt được</strong></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Tưởng <code>255 → 0</code> là do reset</td>
+<td>Đếm sai âm thầm; không có cờ tràn để phân biệt</td>
+<td><code>functional_spec.md</code> INV-9. Tầng ngoài phải tự so <code>count</code> với giá trị chu kỳ trước</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Chỉ kiểm đếm lên, không kiểm đếm xuống</td>
+<td>Chuỗi mượn không được kiểm</td>
+<td>Ca <code>01 → 00 → FF</code> (testbench dòng 18)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Chỉ kiểm quanh 0, không kiểm biên tràn</td>
+<td>Bỏ sót lỗi ở bit cao</td>
+<td>Nạp cưỡng bức <code>8'hFE</code> rồi đếm 2 nhịp (testbench dòng 17). Không có kỹ thuật này thì phải đếm 254 nhịp</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Quên ghi giá trị nạp cưỡng bức cho <strong>cả</strong> mô hình chuẩn</td>
+<td>Hai mô hình lệch pha, assertion báo sai ở nhịp kế — “lỗi” của testbench, không phải của thiết kế</td>
+<td>So hai dòng: <code>dut.count = …</code> <strong>và</strong> <code>ref_i.count_ref = …</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Dùng testbench hiện tại cho mô phỏng <strong>gate-level</strong></td>
+<td>Không chạy được — sau tổng hợp không còn biến <code>count</code>, chỉ có 8 instance <code>_82_</code>…<code>_89_</code></td>
+<td><code>corner_cases.md</code> §6. Phải viết lại phần nạp cưỡng bức</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Báo “bộ đếm chạy được ở 568 MHz” từ slack 8,24 ns</td>
+<td>Phát biểu vượt mức, sai ít nhất bốn lý do</td>
+<td>§7 câu 3</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Báo độ trễ là 1,64 ns</td>
+<td>Sai <strong>156 %</strong></td>
+<td>1,00 ns trong đó là <code>set_input_delay</code> giả định; phần của mạch là 0,64 ns</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="10-cau-hoi-mentor-nen-dat-khi-bao-ve">10. Câu hỏi mentor nên đặt khi bảo vệ</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Câu hỏi</th>
+<th>Đáp án mong đợi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Báo cáo có bao nhiêu flip-flop? Chỉ ra từng ô dùng vào việc gì</td>
+<td><strong>8</strong>, ánh xạ <code>_82_</code>…<code>_89_</code> ↔ <code>count[0]</code>…<code>count[7]</code>. Không có ô dư</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Nếu báo cáo ra 9 hoặc 10 FF thì phần dư có thể là gì?</td>
+<td>Cờ tràn, thanh ghi đồng bộ hoá, hoặc <strong>latch do lỗi mã</strong> (thiếu nhánh trong <code>always_comb</code>). Kiểm bằng cách tìm <code>dlxtp</code>/<code>dlatch</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Chỉ ra trong netlist chỗ nào cho thấy xoá là <strong>đồng bộ</strong></td>
+<td>FF là <code>dfxtp_1</code> — <strong>không có chân reset</strong>; <code>rst_n</code> xuất hiện trong cụm logic trên đường <code>D</code>: <code>and2_0 _81_ (.A(rst_n), …)</code>. Nếu bất đồng bộ sẽ là <code>dfrtp_1</code> với chân <code>RESET_B</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Xoá đồng bộ tốn bao nhiêu?</td>
+<td><strong>+8 cell</strong> (16 % của 49) và <strong>+0,13 ns</strong> (≈ 20 % của 0,64 ns logic). Đổi lại: miễn nhiễm glitch, không cần kiểm recovery/removal</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Nếu clock ngừng mà hạ <code>rst_n</code> thì <code>count</code> có bị xoá không?</td>
+<td><strong>Không.</strong> Đây là hệ quả cốt lõi của xoá đồng bộ, và là rủi ro cần ghi vào tài liệu tích hợp</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Bộ đếm này chạy được bao nhiêu MHz?</td>
+<td><strong>Chưa trả lời được.</strong> Đường báo cáo là in→reg và chứa 1,00 ns <code>set_input_delay</code>; chưa CTS, chưa routing, một góc PVT. Cần STA sau routing trên đường <strong>reg→reg</strong> ở góc chậm nhất</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Vì sao đường tới hạn chỉ có 5 cell logic, không phải 8 tầng carry?</td>
+<td>Carry của phép <code>+1</code> là <strong>hàm AND thuần</strong> ⇒ gom được thành cây. <code>abc</code> dùng cell 4 đầu vào (<code>nor4b_1</code> gom 4 tín hiệu). Mô tả hành vi cho công cụ quyền chọn cấu trúc</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>up</code> là tín hiệu chọn giữa hai mạch cộng/trừ, đúng không?</td>
+<td><strong>Không.</strong> <code>−1 ≡ +0xFF</code> trong modulo 256 nên cả hai nhánh là “cộng hằng số”; <code>up</code> vào như <strong>toán hạng dữ liệu</strong> (<code>nor2_1 _65_ .B(up)</code>). Chỉ có 2 cell <code>mux2i_1</code> trong 49 cell</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Đọc bảng ưu tiên <strong>từ netlist</strong>, không từ RTL</td>
+<td>Tín hiệu nào gần FF hơn thì ưu tiên cao hơn: <code>up</code> (cell 1) → <code>enable</code> (cell 3) → <code>rst_n</code> (cell 5, sát FF). Trùng với <code>rst_n &gt; enable &gt; up</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Ca kiểm ưu tiên ở cuối testbench có đủ mạnh không?</td>
+<td><strong>Không.</strong> Nó chạy khi <code>count = FF</code>, nơi nhánh đúng và nhánh sai <strong>cùng cho <code>00</code></strong>. Phải kiểm ở giá trị khác, ví dụ <code>0xA5</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>D01 có FSM không?</td>
+<td><strong>Có</strong> — 256 trạng thái, mã hoá nhị phân đếm, 0 mã thừa. Bằng chứng: <code>count[k]</code> (là <code>Q</code>) xuất hiện làm đầu vào của cổng sinh <code>D</code>. So với C07: ở đó <code>Q</code> không quay lại ⇒ không có FSM</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Nếu một bit của <code>count</code> bị lật do nhiễu thì sao?</td>
+<td>Máy <strong>không treo</strong> (0 mã bất hợp lệ) nhưng <strong>giá trị sai vĩnh viễn</strong> tới lần reset. Khác C06: ở đó trạng thái chỉ đo thời gian nên tự phục hồi. “Không có mã bất hợp lệ” ≠ “chịu lỗi tốt”</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Thêm chức năng nạp tốn bao nhiêu ô nhớ?</td>
+<td><strong>0.</strong> Chỉ cần một tầng mux 8 bit trước <code>D</code>. Chân cũng còn dư (19/24). Cái khó là <strong>chốt bảng ưu tiên 4 mức</strong></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Vì sao 49 cell trong khi Charter ước lượng 110–160?</td>
+<td>Hai nguyên nhân: thiếu hẳn phần nạp; và <code>up</code> được hạ cấp thành dữ liệu nên không phải dựng hai cây số học</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Vì sao không dùng bộ đếm ripple cho rẻ?</td>
+<td>Dùng <code>Q</code> làm clock ⇒ STA không phân tích được, CTS không xử lý được, các bit lệch pha nên <code>FF → 00</code> đi qua giá trị trung gian <strong>sai</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="11-gioi-han-da-chung-minh-duoc-gi-chua-chung-minh-duoc-gi">11. Giới hạn: đã chứng minh được gì, chưa chứng minh được gì</h2>
+<p><strong>Đã chứng minh (bằng chứng do chính lần chạy này sinh ra):</strong></p>
+<ol>
+<li>Mô hình chuẩn Python độc lập chạy PASS, <strong>quét vét cạn 1024 trạng thái</strong>
+   (<code>python_reference_run.log</code>).</li>
+<li>Mô phỏng RTL PASS trên 17 cạnh clock, <strong>so từng chu kỳ với mô hình chuẩn SystemVerilog</strong>
+   chạy song song (<code>simulation.log</code>). Phủ 4/5 ca bắt buộc của Charter mục 8, kể cả <strong>cả hai
+   biên quấn vòng</strong>.</li>
+<li>RTL tổng hợp được thành 49 standard cell sky130 với <strong>đúng 8</strong> ô nhớ, 427,9104 µm²
+   (<code>synth_stat.txt</code>).</li>
+<li><strong>Bóc tách được toàn bộ 8 FF</strong> về đúng từng bit, khớp tên instance netlist (§8).</li>
+<li><strong>Chứng minh được bằng cấu trúc rằng xoá là ĐỒNG BỘ</strong>: <code>dfxtp_1</code> không có chân reset;
+   <code>rst_n</code> nằm trong cụm logic trên đường <code>D</code> (§7 câu 2).</li>
+<li>Đường tới hạn xác định được: <code>up → count[7]</code>, 6 cell, arrival 1,64 ns, required 9,88 ns,
+   slack 8,24 ns (<code>timing_report_max.txt</code>).</li>
+<li>Tỷ lệ công suất tuần tự / tổ hợp = 74,4 % / 25,6 % (<code>power_report.txt</code>).</li>
+</ol>
+<p><strong>Chưa chứng minh:</strong></p>
+<ol>
+<li><strong>Khối chưa thoả đề D01.</strong> Thiếu chức năng <strong>nạp song song</strong> (<code>ui_in[7:0]</code> +
+   <code>uio_in[0]</code> theo Charter mục 4) — tức thiếu chữ “đa năng” trong tên đề, và bối cảnh ứng
+   dụng của Charter mục 1 (<em>“nạp giá trị đầu và đếm ngược”</em>) <strong>không thực hiện được</strong>.</li>
+<li><strong>Ca bắt buộc “nạp giữa chừng” chưa chạy</strong> và không thể chạy cho tới khi bổ sung <code>load</code>.</li>
+<li><strong>Khẳng định về ưu tiên còn yếu</strong> — ca kiểm hiện có không phân biệt được nhánh đúng với
+   nhánh sai (<code>timing_diagram.md</code> §3). Cần ca TC-B5.</li>
+<li><strong>Chưa chứng minh bằng MÔ PHỎNG rằng reset là đồng bộ.</strong> Bằng chứng hiện có là bằng
+   chứng <strong>cấu trúc</strong> (netlist). Ca hành vi tương ứng (TC-B6: hạ <code>rst_n</code> khi clock đứng yên)
+   <strong>chưa chạy</strong>.</li>
+<li><strong>Chưa mô phỏng gate-level.</strong> Và testbench hiện tại <strong>không dùng lại được</strong> cho gate-level
+   vì nó ghi qua tên phân cấp <code>dut.count</code>.</li>
+<li><strong>Chưa chạy P&amp;R.</strong> Mọi số timing là sau tổng hợp, clock lý tưởng (skew = 0), không ký
+   sinh RC, một góc PVT <code>tt_025C_1v80</code>.</li>
+<li><strong>Không có phát biểu nào về tần số tối đa</strong> — đây chính là đáp án cho Charter mục 2
+   câu 3, không phải một thiếu sót cần che.</li>
+<li><strong>Công suất chưa đo bằng VCD thật</strong>, và với D01 hoạt động thật phụ thuộc rất mạnh vào
+   <code>enable</code>.</li>
+<li><strong>Chưa chạy DRC/LVS, chưa sinh GDSII.</strong> Không có phát biểu nào về sign-off, tape-out,
+   chế tạo hay đo sau chế tạo — Charter mục 3 xếp ngoài phạm vi.</li>
+</ol>
+<p>RTL <strong>không bị sửa</strong>. Mọi đề nghị bổ sung (<code>functional_spec.md</code> §9, <code>tradeoff.md</code> §4) là
+thiết kế trên giấy và cần thầy duyệt trước khi áp dụng.</p>
+<hr>
+<p><em>Phiên bản: v1.0 · Ngày: 2026-09-24</em></p>
+</main>
+<footer class="doc">
+  Tài liệu sinh từ <code>implementation-notes_D01.md</code>.
+  Mọi số liệu đều kèm công cụ, phiên bản và lệnh tái lập trong
+  <code>07_TRACEABILITY/evidence_index.md</code>.
+</footer>
+</div>
+<script>
+(function(){
+  var b=document.createElement('button');
+  b.className='themebtn'; b.type='button';
+  function lbl(){var t=document.documentElement.getAttribute('data-theme');
+    return t==='dark'?'Nen sang':(t==='light'?'Nen toi':'Doi nen');}
+  b.textContent=lbl();
+  try{var s=localStorage.getItem('rtl2gds-theme'); if(s)document.documentElement.setAttribute('data-theme',s);}catch(e){}
+  b.textContent=lbl();
+  b.addEventListener('click',function(){
+    var cur=document.documentElement.getAttribute('data-theme');
+    var mq=window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next=cur?(cur==='dark'?'light':'dark'):(mq?'light':'dark');
+    document.documentElement.setAttribute('data-theme',next);
+    try{localStorage.setItem('rtl2gds-theme',next);}catch(e){}
+    b.textContent=lbl();
+  });
+  document.body.appendChild(b);
+})();
+</script>
+</body>
+</html>
